@@ -107,12 +107,6 @@
         .bg-white-content {
             background-color: white;
         }
-        .bg-pink-content {
-            background-color: #ffe4e6;
-        }
-        .bg-yellow-content {
-            background-color: #fffde7;
-        }
         .bg-blue-100-content {
             background-color: #dbeafe;
         }
@@ -149,6 +143,12 @@
             font-size: 0.875rem;
             color: #4b5563;
             margin-bottom: 1rem;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .min-w-date {
+            min-width: 100px;
         }
     </style>
 </head>
@@ -203,14 +203,14 @@
     </div>
 
     <div id="internal" class="tab-content content-container">
+        <h2 class="text-xl md:text-2xl font-bold mb-4">院內品質提升活動進度</h2>
         <div class="flex space-x-4 mb-8 justify-center flex-wrap gap-2">
-            <button class="sub-tab-button" onclick="showInternalProgress('qcc-progress')">QCC團隊</button>
-            <button class="sub-tab-button" onclick="showInternalProgress('facilitator-progress')">品管輔導員</button>
-            <button class="sub-tab-button" onclick="showInternalProgress('all-hospital-events')">全院性活動</button>
+            <button class="sub-tab-button" onclick="showInternalActivity('qccTeams')">QCC團隊</button>
+            <button class="sub-tab-button" onclick="showInternalActivity('consultants')">品管輔導員</button>
+            <button class="sub-tab-button" onclick="showInternalActivity('allHospital')">全院性活動</button>
         </div>
-
         <div id="internal-progress-view">
-            <!-- Content will be loaded here dynamically -->
+            <p class="text-gray-500 text-center text-lg mt-12">請點選上方按鈕查看活動進度</p>
         </div>
     </div>
 
@@ -249,35 +249,30 @@
         { id: 15, unit: '腦中風中心/救腦圈', topic: '提升缺血性腦中風接受EVT之病患三個月mRS 0-2分之比率', group: 'B組', consultant: '廖熏香顧問' },
     ];
 
-    const qccTeamProgress = [
-        { date: '3/5', event: '進度輔導(Q2) - A組', type: 'qcc' },
-        { date: '3/6', event: '進度輔導(Q2) - B組', type: 'qcc' },
-        { date: '3/20', event: '品質提升活動課程(Q3) - 顧問B組', type: 'qcc' },
-        { date: '4/17', event: '進度輔導(Q5) - 顧問B組', type: 'qcc' },
-        { date: '4/21', event: '進度輔導(Q5) - 顧問A組', type: 'qcc' },
-        { date: '6/9', event: '進度輔導(Q6) - A組', type: 'qcc' },
-        { date: '6/12', event: '進度輔導(Q6) - B組', type: 'qcc' },
-        { date: '7/31', event: '進度輔導(Q9) - 顧問B組', type: 'qcc' },
-        { date: '8/5', event: '進度輔導(Q7) - 顧問A組', type: 'qcc' },
-        { date: '8/14', event: '進度輔導(Q9) - 顧問A組', type: 'qcc' },
-        { date: '10/15', event: '進度輔導(Q10) - 顧問A組', type: 'qcc' },
-        { date: '10/16', event: '進度輔導(Q10) - 顧問B組', type: 'qcc' },
-        { date: '12/11', event: '品質提升活動期末成果發表競賽 - 顧問A組', type: 'qcc' },
-        { date: '12/18', event: '品質提升活動期末成果發表競賽 - 顧問B組', type: 'qcc' },
-    ];
-    const qcFacilitatorProgress = [
-        { date: '3/21', event: '品管輔導員交流共識會', type: 'facilitator' },
-        { date: '6/26', event: '品質提升活動課程(品管輔導員)', type: 'facilitator' },
-    ];
-    const allHospitalEvents = [
-        { date: '2/12', event: '品質提升活動 QCC 運作說明會', type: 'all' },
-        { date: '2/25', event: '品質提升活動課程(Q1)', type: 'all' },
-        { date: '6/25', event: '醫品病安標竿分享會', type: 'all' },
-        { date: '7/17', event: '品質提升活動期中發表會', type: 'all' },
-        { date: '7/24', event: 'QCC 共通課程-PDCA 基本理念暨實務應用', type: 'all' },
+    const internalEvents = [
+        { month: '二月', date: '2/12', type: '課程', category: '品質提升活動 QCC 運作說明會', topic: '有興趣組成團隊參加品質提升活動者皆可報名', group: '全院' },
+        { month: '二月', date: '2/25', type: '課程', category: '品質提升活動課程(Q1)', topic: '品管通識課程-多元品管手法及工具簡介', group: '全院' },
+        { month: '三月', date: '3/5', type: '輔導', category: '進度輔導(Q2)-A組', topic: 'QCC 團隊-討論主題及品管工具選用/活動計劃擬訂', group: 'A' },
+        { month: '三月', date: '3/6', type: '輔導', category: '進度輔導(Q2)-B組', topic: 'QCC 團隊-討論主題及品管工具選用/活動計劃擬訂', group: 'B' },
+        { month: '三月', date: '3/20', type: '課程', category: '品質提升活動課程(Q3)', topic: 'QCC 基礎課程-品管改善工具步驟介紹與應用－問題解決型、課題達成型', group: '全院' },
+        { month: '三月', date: '3/21', type: '輔導', category: '品管輔導員顧問輔導', topic: '討論主題及品管工具選用/活動計畫擬訂', group: '輔導員' },
+        { month: '四月', date: '4/17', type: '輔導', category: '進度輔導(Q5)-B組', topic: 'QCC 團隊-現狀把握/目標設定', group: 'B' },
+        { month: '四月', date: '4/21', type: '輔導', category: '進度輔導(Q5)-A組', topic: 'QCC 團隊-現狀把握/目標設定', group: 'A' },
+        { month: '六月', date: '6/9', type: '輔導', category: '進度輔導(Q6)-A組', topic: 'QCC 團隊-解析/對策擬訂', group: 'A' },
+        { month: '六月', date: '6/12', type: '輔導', category: '進度輔導(Q6)-B組', topic: 'QCC 團隊-解析/對策擬訂', group: 'B' },
+        { month: '六月', date: '6/25', type: '課程', category: '醫品病安標竿分享會', topic: '-', group: '全院' },
+        { month: '六月', date: '6/26', type: '輔導', category: '品管輔導員顧問輔導', topic: '解析/對策擬訂', group: '輔導員' },
+        { month: '七月', date: '7/17', type: '課程', category: '品質提升活動期中發表會', topic: '-', group: '全院' },
+        { month: '七月', date: '7/24', type: '課程', category: 'QCC 共通課程', topic: 'PDCA 基本理念暨實務應用', group: '全院' },
+        { month: '七月/八月', date: '7/31', type: '輔導', category: '進度輔導(Q9)-B組', topic: 'QCC 團隊-對策實施', group: 'B' },
+        { month: '八月', date: '8/14', type: '輔導', category: '進度輔導(Q9)-A組', topic: 'QCC 團隊-對策實施', group: 'A' },
+        { month: '十月', date: '10/15', type: '輔導', category: '進度輔導(Q10)-A組', topic: 'QCC 團隊-效果確認', group: 'A' },
+        { month: '十月', date: '10/16', type: '輔導', category: '進度輔導(Q10)-B組', topic: 'QCC 團隊-效果確認', group: 'B' },
+        { month: '十二月', date: '12/11', type: '輔導', category: '進度輔導-A組', topic: 'QCC 團隊-標準化/檢討與改進', group: 'A' },
+        { month: '十二月', date: '12/18', type: '輔導', category: '進度輔導-B組', topic: 'QCC 團隊-標準化/檢討與改進', group: 'B' },
+        { month: '隔年二月', date: '2/11-2/12', type: '課程', category: '品質提升活動期末成果發表競賽暨院際交流活動', topic: '-', group: '全院' }
     ];
 
-    // Updated external competitions data with simplified progress
     const externalCompetitions = {
         '醫管學會': {
             title: '台灣健康照護品質管理競賽',
@@ -403,7 +398,6 @@
         }
     };
 
-    // Updated external competitions teams with the new data from the user
     const externalCompetitionTeams = {
         '台灣醫務管理學會－台灣健康照護品質管理競賽': {
             completion: '已於 2025/5/24 完成報名',
@@ -502,78 +496,135 @@
     };
 
 
-    function getStatus(date) {
-        const today = new Date('2025-09-18');
-        const [month, day] = date.split('/').map(Number);
-        const eventDate = new Date(2025, month - 1, day);
-
-        if (eventDate.getTime() < today.getTime()) {
+    function getStatus(month, day) {
+        // According to user's instruction, all events from Jan to Aug are completed
+        const completedMonths = [1, 2, 3, 4, 5, 6, 7, 8];
+        let monthNumber = parseInt(month.replace('月', ''), 10);
+        if (completedMonths.includes(monthNumber)) {
             return { status: '已完成', class: 'status-completed' };
-        } else if (eventDate.getMonth() === today.getMonth() && eventDate.getDate() === today.getDate()) {
-            return { status: '進行中', class: 'status-in-progress' };
-        } else {
-            return { status: '待辦', class: 'status-to-do' };
+        } else if (month === '十二月' || month === '隔年二月') {
+             return { status: '待辦', class: 'status-to-do' };
+        }
+        else {
+            const today = new Date('2025-09-18');
+            let eventYear = (monthNumber < today.getMonth() + 1) ? 2026 : 2025;
+            const eventDate = new Date(eventYear, monthNumber - 1, parseInt(day, 10));
+
+            if (eventDate.getTime() > today.getTime()) {
+                return { status: '待辦', class: 'status-to-do' };
+            } else {
+                return { status: '進行中', class: 'status-in-progress' };
+            }
         }
     }
 
-    function renderProgressTable(targetId, title, data, backgroundColorClass) {
-        const container = document.getElementById(targetId);
-        let htmlContent = `
-            <div class="${backgroundColorClass} rounded-lg p-4 mb-8">
-                <h3 class="text-xl font-bold mb-4">${title}進度追蹤</h3>
-                <div class="overflow-x-auto rounded-lg shadow-sm">
-                    <table class="w-full text-sm text-gray-700">
-                        <thead class="text-xs text-gray-900 uppercase bg-gray-200">
-                            <tr class="rounded-t-lg">
-                                <th scope="col" class="py-3 px-6 rounded-tl-lg">日期</th>
-                                <th scope="col" class="py-3 px-6">活動/時程</th>
-                                <th scope="col" class="py-3 px-6 rounded-tr-lg">狀態</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-        `;
-        data.forEach(event => {
-            const status = getStatus(event.date);
+
+    function renderInternalTable(filteredEvents) {
+        let htmlContent = `<div class="overflow-x-auto rounded-lg shadow-sm mb-4">
+                            <table class="w-full text-sm text-gray-700">
+                                <thead class="text-xs text-gray-900 uppercase bg-gray-200">
+                                    <tr class="rounded-t-lg">
+                                        <th scope="col" class="py-3 px-6 rounded-tl-lg min-w-date">月份/日期</th>
+                                        <th scope="col" class="py-3 px-6">課程類別</th>
+                                        <th scope="col" class="py-3 px-6">課程/輔導主題</th>
+                                        <th scope="col" class="py-3 px-6 rounded-tr-lg text-right">進度</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+        // Group events by month
+        const eventsByMonth = filteredEvents.reduce((acc, event) => {
+            const month = event.month;
+            if (!acc[month]) {
+                acc[month] = [];
+            }
+            acc[month].push(event);
+            return acc;
+        }, {});
+
+        for (const month in eventsByMonth) {
+            htmlContent += `<tr><td colspan="4" class="group-heading">${month}</td></tr>`;
+            eventsByMonth[month].forEach(event => {
+                const dateParts = event.date.split('-')[0];
+                const monthNumber = dateParts.split('/')[0].replace('月', '');
+                const day = dateParts.split('/')[1];
+                const status = getStatus(monthNumber, day);
+                const statusClass = status.class;
+                const statusText = status.status;
+                htmlContent += `
+                    <tr class="hover:bg-gray-100 transition-colors">
+                        <td class="py-3 px-6 min-w-date">${event.date}</td>
+                        <td class="py-3 px-6">${event.category}</td>
+                        <td class="py-3 px-6">${event.topic}</td>
+                        <td class="py-3 px-6 text-right"><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            });
+        }
+        
+        htmlContent += `</tbody></table></div>`;
+        return htmlContent;
+    }
+
+    function renderProgressTable(containerId, title, progressData, backgroundColorClass) {
+        const container = document.getElementById(containerId);
+        let htmlContent = `<div class="p-6 rounded-xl shadow-md ${backgroundColorClass} mb-6">
+                            <h3 class="text-xl font-bold mb-4">${title}</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-gray-700">
+                                    <thead class="text-xs text-gray-900 uppercase bg-gray-200">
+                                        <tr>
+                                            <th scope="col" class="py-3 px-6 rounded-tl-lg min-w-date">日期</th>
+                                            <th scope="col" class="py-3 px-6">活動/時程</th>
+                                            <th scope="col" class="py-3 px-6 rounded-tr-lg text-right">進度</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
+
+        progressData.forEach(item => {
+            const date = item.date.split('-')[0];
+            const dateParts = date.split('/');
+            const month = dateParts[0];
+            const day = dateParts[1];
+            const status = getStatus(month, day);
+            const statusClass = status.class;
+            const statusText = status.status;
+
             htmlContent += `
-                <tr class="hover:bg-gray-100 transition-colors">
-                    <td class="py-3 px-6">${event.date}</td>
-                    <td class="py-3 px-6">${event.event}</td>
-                    <td class="py-3 px-6"><span class="status-badge ${status.class}">${status.status}</span></td>
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="py-3 px-6 min-w-date">${date}</td>
+                    <td class="py-3 px-6">${item.event}</td>
+                    <td class="py-3 px-6 text-right"><span class="status-badge ${statusClass}">${statusText}</span></td>
                 </tr>
             `;
         });
-        htmlContent += `
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
+        
+        htmlContent += `</tbody></table></div></div>`;
         container.innerHTML += htmlContent;
     }
 
-    // Function to render internal progress table
-    function showInternalProgress(tabName) {
+    function showInternalActivity(activityType) {
         document.querySelectorAll('#internal .sub-tab-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`#internal [onclick="showInternalProgress('${tabName}')"]`).classList.add('active');
+        document.querySelector(`#internal [onclick="showInternalActivity('${activityType}')"]`).classList.add('active');
+        const container = document.getElementById('internal-progress-view');
+        container.innerHTML = '';
+        
+        let contentHtml = '';
 
-        let progressData;
-        let title;
-        if (tabName === 'qcc-progress') {
-            progressData = qccTeamProgress;
-            title = '院內QCC團隊';
-        } else if (tabName === 'facilitator-progress') {
-            progressData = qcFacilitatorProgress;
-            title = '品管輔導員';
-        } else if (tabName === 'all-hospital-events') {
-            progressData = allHospitalEvents;
-            title = '全院性活動';
+        if (activityType === 'qccTeams') {
+            const qccEvents = internalEvents.filter(event => event.group === 'A' || event.group === 'B' || event.group === '全院');
+            contentHtml = renderInternalTable(qccEvents);
+        } else if (activityType === 'consultants') {
+            const consultantEvents = internalEvents.filter(event => event.group === '輔導員');
+            contentHtml = renderInternalTable(consultantEvents);
+        } else if (activityType === 'allHospital') {
+            const allHospitalEvents = internalEvents.filter(event => event.group === '全院' && event.type === '課程');
+            contentHtml = renderInternalTable(allHospitalEvents);
         }
 
-        document.getElementById('internal-progress-view').innerHTML = '';
-        renderProgressTable('internal-progress-view', title, progressData, 'bg-white-content');
+        container.innerHTML = contentHtml;
     }
 
-    // Function to render external competition details
     function showExternalCompetition(competitionKey) {
         document.querySelectorAll('#external .sub-tab-button').forEach(btn => btn.classList.remove('active'));
         document.querySelector(`#external [onclick="showExternalCompetition('${competitionKey}')"]`).classList.add('active');
@@ -606,10 +657,9 @@
     function showNhqaCategory(category) {
         const categoryData = externalCompetitions['NHQA'].categories[category];
         const container = document.getElementById('nhqa-category-progress');
-        container.innerHTML = ''; // Clear previous content
+        container.innerHTML = '';
         renderProgressTable('nhqa-category-progress', category, categoryData.progress, 'bg-teal-100-content');
     }
-
 
     function openTab(tabName) {
         const tabs = document.querySelectorAll('.tab-button');
@@ -628,13 +678,13 @@
         if (tabName === 'home') {
              renderHome();
         } else {
-             document.getElementById('internal-progress-view').innerHTML = '';
+             document.getElementById('internal-progress-view').innerHTML = '<p class="text-gray-500 text-center text-lg mt-12">請點選上方按鈕查看活動進度</p>';
              document.querySelectorAll('#internal .sub-tab-button').forEach(btn => btn.classList.remove('active'));
              document.getElementById('external-progress-view').innerHTML = '';
              document.querySelectorAll('#external .sub-tab-button').forEach(btn => btn.classList.remove('active'));
         }
     }
-    
+
     function renderHome() {
         const qccTableBody = document.getElementById('qcc-teams');
         qccTableBody.innerHTML = '';
@@ -665,7 +715,6 @@
             externalTableBody.innerHTML += `<tr><td colspan="3" class="group-heading">${organizer}</td></tr>`;
             const data = externalCompetitionTeams[organizer];
 
-            // Display completion note if it exists
             if (data.completion) {
                 externalTableBody.innerHTML += `<tr><td colspan="3" class="py-3 px-6 completion-note">${data.completion}</td></tr>`;
             }
@@ -694,7 +743,7 @@
                                 </tr>
                             `;
                         });
-                    } else { // Handle nested categories like for "智慧醫療類" in NHQA
+                    } else {
                         for (const subCategory in categoryData) {
                              externalTableBody.innerHTML += `<tr><td colspan="3" class="px-6 py-3 font-semibold text-sm text-gray-600 bg-gray-100">${subCategory}</td></tr>`;
                              categoryData[subCategory].forEach(team => {
@@ -712,7 +761,7 @@
             }
         }
     }
-
+    
     // Initial render
     document.addEventListener('DOMContentLoaded', () => {
         openTab('home');
