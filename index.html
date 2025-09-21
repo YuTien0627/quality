@@ -390,7 +390,7 @@
                 },
                 '淨零醫療類': {
                     progress: [
-                        { '規劃明年參賽' }
+                        { date: '—', event: '規劃明年參賽' }
                     ]
                 }
             }
@@ -551,6 +551,23 @@ function getStatusByRules(monthLabel, dateStr) {
   // 其他 → 待辦
   return { status: '待辦', class: 'status-to-do' };
 }
+function parseEndDate(dateStr, monthLabel = '') {
+  const raw = dateStr.trim();
+  let lastPart = raw;
+
+  // 支援 "11月" 這種寫法 → 視為 "11/1"
+  if (raw.includes('月') && !raw.includes('/')) {
+    const mOnly = Number(raw.replace('月',''));
+    lastPart = `${mOnly}/1`;
+  } else {
+    lastPart = raw.split('-').pop().trim(); // 既有邏輯
+  }
+
+  const [mStr, dStr] = lastPart.split('/');
+  const m = Number(mStr);
+  const d = Number(dStr || 1); // 如果沒日，就用 1
+  ...
+}
 
 
 
@@ -583,7 +600,7 @@ function getStatusByRules(monthLabel, dateStr) {
                 const dateParts = event.date.split('-')[0];
                 const monthNumber = dateParts.split('/')[0].replace('月', '');
                 const day = dateParts.split('/')[1];
-                const status = getStatus(monthNumber, day);
+                const status = getStatusByRules(event.month || '', event.date);
                 const statusClass = status.class;
                 const statusText = status.status;
                 htmlContent += `
@@ -621,7 +638,7 @@ function getStatusByRules(monthLabel, dateStr) {
             const dateParts = date.split('/');
             const month = dateParts[0];
             const day = dateParts[1];
-            const status = getStatus(month, day);
+            const status = getStatusByRules('', item.date);
             const statusClass = status.class;
             const statusText = status.status;
 
