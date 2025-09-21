@@ -495,27 +495,63 @@
     };
 
 
-    function getStatus(month, day) {
-        // According to user's instruction, all events from Jan to Aug are completed
-        const completedMonths = [1, 2, 3, 4, 5, 6, 7, 8];
-        let monthNumber = parseInt(month.replace('月', ''), 10);
-        if (completedMonths.includes(monthNumber)) {
-            return { status: '已完成', class: 'status-completed' };
-        } else if (month === '十二月' || month === '隔年二月') {
-             return { status: '待辦', class: 'status-to-do' };
-        }
-        else {
-            const today = new Date('2025-09-18');
-            let eventYear = (monthNumber < today.getMonth() + 1) ? 2026 : 2025;
-            const eventDate = new Date(eventYear, monthNumber - 1, parseInt(day, 10));
+// 取得「當地時區」的今天 00:00
+function todayStart() {
+  const t = new Date();
+  t.setHours(0, 0, 0, 0);
+  return t;
+}
 
-            if (eventDate.getTime() > today.getTime()) {
-                return { status: '待辦', class: 'status-to-do' };
-            } else {
-                return { status: '進行中', class: 'status-in-progress' };
-            }
-        }
-    }
+// 將 "mm/dd" 或 "mm/dd-mm/dd" 解析成「結束日」的 Date 物件
+// 若 monthLabel 含「隔年」，則將年份 +1（例：隔年二月）
+function parseEndDate(dateStr, monthLabel = '') {
+  // 取區間的最後一段（例如 "11/10-11/14" -> "11/14"）
+  const lastPart = dateStr.split('-').pop().trim();
+  const [mStr, dStr] = lastPart.split('/');
+
+  const m = Number(mStr);
+  const d = Number(dStr);
+
+  const base = todayStart();
+  let year = base.getFullYear();
+
+  if (monthLabel.includes('隔年')) {
+    year += 1;
+  }
+
+  // 以當地時區建立事件日期（避免時差造成跨日）
+  const dt = new Date(year, m - 1, d);
+  dt.setHours(0, 0, 0, 0);
+  return dt;
+}
+
+// 依規則回傳 { status, class }
+function getStatusByRules(monthLabel, dateStr) {
+  // 特例：隔年二月一律待辦
+  if (monthLabel.includes('隔年二月')) {
+    return { status: '待辦', class: 'status-to-do' };
+  }
+
+  const t0 = todayStart();
+  const ev = parseEndDate(dateStr, monthLabel);
+
+  if (ev.getTime() < t0.getTime()) {
+    return { status: '已完成', class: 'status-completed' };
+  }
+
+  const evMonth = ev.getMonth();         // 0-11
+  const tMonth  = t0.getMonth();
+  const nextMonth = (tMonth + 1) % 12;
+
+  // 同月份（含今天與未來）或下個月 → 進行中
+  if (evMonth === tMonth || evMonth === nextMonth) {
+    return { status: '進行中', class: 'status-in-progress' };
+  }
+
+  // 其他 → 待辦
+  return { status: '待辦', class: 'status-to-do' };
+}
+
 
 
     function renderInternalTable(filteredEvents) {
