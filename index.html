@@ -6,48 +6,235 @@
   <title>奇美醫院品質提升活動進度表</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #374151; padding: 2rem; }
-    .container { max-width: 1200px; margin: 0 auto; background-color: white; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; }
-    .tab-button { padding: 1rem 1.5rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; color: #6b7280; background-color: #f9fafb; border-radius: .75rem .75rem 0 0; border-bottom: 3px solid transparent; }
-    .tab-button.active { color: #1f2937; background-color: #e5e7eb; border-bottom: 3px solid #1f2937; }
-    .tab-content { display: none; padding: 2rem; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+    :root {
+      --base-bg: #0f172a;
+      --panel-bg: #ffffff;
+      --ink-strong: #0b1220;
+      --ink-muted: #4b5563;
+      --accent: #2563eb;
+      --accent-soft: #e7ecff;
+      --border: #e2e8f0;
+      --glow: rgba(37, 99, 235, 0.12);
+      --success: #0f9d58;
+      --warning: #d97706;
+      --neutral: #6b7280;
+    }
+
+    body {
+      font-family: 'Inter', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.08), transparent 30%),
+                  radial-gradient(circle at 80% 10%, rgba(16, 185, 129, 0.12), transparent 26%),
+                  linear-gradient(145deg, #f7f8fb 0%, #edf1f7 40%, #e7edf5 100%);
+      color: var(--ink-strong);
+      padding: 2.5rem 1.5rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: var(--panel-bg);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12), 0 2px 10px rgba(15, 23, 42, 0.06);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .header-panel {
+      background: linear-gradient(120deg, #0f172a, #1e3a8a, #2563eb);
+      color: #f8fafc;
+      padding: 2.75rem 2.5rem;
+      position: relative;
+    }
+
+    .header-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.08), transparent 40%),
+                  radial-gradient(circle at 80% 20%, rgba(125,211,252,0.12), transparent 35%);
+      pointer-events: none;
+    }
+
+    .header-panel h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      margin-bottom: .25rem;
+    }
+
+    .header-panel p {
+      max-width: 720px;
+      color: #e2e8f0;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .badge-subtle {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #f8fafc;
+      padding: .35rem .9rem;
+      border-radius: 999px;
+      backdrop-filter: blur(2px);
+      font-weight: 600;
+      font-size: .95rem;
+      letter-spacing: .01em;
+      margin-bottom: 1rem;
+    }
+
+    .intro {
+      padding: 1.75rem 2.5rem 0 2.5rem;
+      background: linear-gradient(180deg, #f8fafc 0%, rgba(248, 250, 252, 0.65) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .intro h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ink-strong);
+      margin-bottom: .5rem;
+    }
+
+    .intro p {
+      color: var(--ink-muted);
+      line-height: 1.7;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: .75rem;
+      padding: 1.5rem 2.5rem 0 2.5rem;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-button {
+      padding: .85rem 1.4rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--ink-muted);
+      background-color: #f8fafc;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .tab-button.active {
+      color: var(--ink-strong);
+      background-color: #eef2ff;
+      border-color: #c7d2fe;
+      box-shadow: 0 10px 25px var(--glow);
+    }
+
+    .tab-button:hover { transform: translateY(-1px); }
+
+    .tab-content { display: none; padding: 2rem 2.5rem 2.5rem 2.5rem; }
     .tab-content.active { display: block; }
-    .status-badge { padding: .25rem .75rem; border-radius: 9999px; font-size: .875rem; font-weight: 600; color: white; text-align: center; }
-    .status-completed { background-color: #10b981; }
-    .status-in-progress { background-color: #f59e0b; }
-    .status-to-do { background-color: #6b7280; }
+
+    .status-badge {
+      padding: .35rem .85rem;
+      border-radius: 9999px;
+      font-size: .875rem;
+      font-weight: 700;
+      color: white;
+      text-align: center;
+      letter-spacing: .01em;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .status-completed { background: linear-gradient(135deg, var(--success), #34d399); }
+    .status-in-progress { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .status-to-do { background: linear-gradient(135deg, var(--neutral), #9ca3af); }
+
     table { width: 100%; border-collapse: separate; border-spacing: 0 .75rem; }
     th, td { padding: 1rem; text-align: left; }
-    th { background-color: #e5e7eb; font-weight: 700; }
-    tr:nth-child(odd) { background-color: #f9fafb; }
+    th {
+      background-color: #f8fafc;
+      font-weight: 700;
+      color: var(--ink-strong);
+      border: 1px solid var(--border);
+      border-bottom: 0;
+    }
+    tr {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.05);
+    }
+    tr:hover { background-color: #f8fafc; }
+
     .content-container { min-height: 400px; }
-    .tab-content h2 { font-size: 1.5rem; font-weight: 700; color: #1f2937; margin-bottom: 1.5rem; }
-    .group-heading { font-weight: 700; color: #4b5563; background-color: #d1d5db; padding: .5rem 1rem; border-radius: .5rem; margin-top: 1.5rem; margin-bottom: .5rem; }
-    .sub-group-heading { font-weight: 600; color: #6b7280; background-color: #e5e7eb; padding: .5rem 1rem; border-radius: .5rem; margin-top: 1rem; margin-left: 1rem; border-left: 3px solid #9ca3af; }
+    .tab-content h2 { font-size: 1.5rem; font-weight: 700; color: var(--ink-strong); margin-bottom: 1.5rem; letter-spacing: .01em; }
+
+    .group-heading {
+      font-weight: 700;
+      color: var(--ink-strong);
+      background: linear-gradient(90deg, rgba(37,99,235,0.12), rgba(37,99,235,0.05));
+      padding: .75rem 1rem;
+      border-radius: .75rem;
+      margin-top: 1.5rem;
+      margin-bottom: .5rem;
+      border: 1px solid var(--border);
+    }
+
+    .sub-group-heading {
+      font-weight: 700;
+      color: var(--ink-muted);
+      background-color: #f4f6fb;
+      padding: .65rem 1rem;
+      border-radius: .6rem;
+      margin-top: 1rem;
+      margin-left: 1rem;
+      border-left: 4px solid #a5b4fc;
+      border: 1px solid var(--border);
+    }
+
     .bg-white-content { background-color: white; }
-    .bg-blue-100-content { background-color: #dbeafe; }
-    .bg-green-100-content { background-color: #dcfce7; }
-    .bg-purple-100-content { background-color: #ede9fe; }
-    .bg-orange-100-content { background-color: #ffedd5; }
-    .bg-red-100-content { background-color: #fee2e2; }
-    .bg-teal-100-content { background-color: #ccfbf1; }
-    .sub-tab-button { padding: .75rem 1.5rem; font-weight: 600; cursor: pointer; border-radius: .5rem; transition: all .3s ease; color: #4b5563; background-color: #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .sub-tab-button.active, .sub-tab-button:hover { background-color: #d1d5db; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-    .completion-note { font-size: .875rem; color: #4b5563; margin-bottom: 1rem; }
+    .bg-blue-100-content { background: linear-gradient(180deg, #eef2ff 0%, #e0e7ff 100%); }
+    .bg-green-100-content { background: linear-gradient(180deg, #ecfdf3 0%, #dcfce7 100%); }
+    .bg-purple-100-content { background: linear-gradient(180deg, #f5f3ff 0%, #ede9fe 100%); }
+    .bg-orange-100-content { background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%); }
+    .bg-red-100-content { background: linear-gradient(180deg, #fef2f2 0%, #fee2e2 100%); }
+    .bg-teal-100-content { background: linear-gradient(180deg, #ecfeff 0%, #ccfbf1 100%); }
+
+    .sub-tab-button {
+      padding: .85rem 1.6rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: .75rem;
+      transition: all .3s ease;
+      color: var(--ink-muted);
+      background-color: #f8fafc;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+    }
+    .sub-tab-button.active, .sub-tab-button:hover { background-color: var(--accent-soft); color: var(--ink-strong); border-color: #c7d2fe; box-shadow: 0 10px 25px var(--glow); transform: translateY(-1px); }
+
+    .completion-note { font-size: .95rem; color: var(--ink-muted); margin-bottom: 1rem; background: #f8fafc; border-radius: .6rem; padding: .75rem 1rem; border: 1px dashed var(--border); }
     .text-right { text-align: right; }
     .min-w-date { min-width: 100px; }
   </style>
 </head>
 <body class="bg-gray-100">
-  <div class="container mt-12 shadow-lg rounded-2xl">
+  <div class="container mt-10 rounded-2xl">
     <!-- Header -->
-    <div class="bg-blue-900 text-white text-center py-6 rounded-t-2xl">
-      <h1 class="text-3xl font-bold">奇美醫院品質提升活動進度表</h1>
+    <div class="header-panel rounded-t-2xl">
+      <div class="badge-subtle">2025 品質提升 · 現況總覽</div>
+      <h1>奇美醫院品質提升活動進度表</h1>
+      <p>整合院內 QCC 運作、顧問輔導與外部競賽，讓團隊在同一視角下掌握重點時程，精準安排資源、協作與成果展示。</p>
+    </div>
+
+    <div class="intro">
+      <h2>進度概覽</h2>
+      <p>以清晰、舒適的介面呈現各活動進度，維持專業質感的同時，也保留友善親和的閱讀體驗，讓跨團隊溝通更順暢。</p>
     </div>
 
     <!-- Tabs -->
-    <div class="flex border-b border-gray-300 bg-gray-50">
+    <div class="tab-bar">
       <button class="tab-button active" onclick="openTab('home')">首頁</button>
       <button class="tab-button" onclick="openTab('internal')">院內品質提升活動</button>
       <button class="tab-button" onclick="openTab('external')">院外品質競賽</button>
